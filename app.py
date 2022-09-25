@@ -1,12 +1,25 @@
+import os
 from datetime import datetime
 from flask import Flask, render_template, request, redirect, url_for, send_from_directory
+from azure.identity import DefaultAzureCredential
+from azure.storage.blob import BlobServiceClient
+
 app = Flask(__name__)
+
+token_credential = DefaultAzureCredential();
+blob_service_client = BlobServiceClient(
+        account_url="https://testappstorageadz1.blob.core.windows.net",
+        credential=token_credential
+    )
+blob_client = blob_service_client.get_blob_client(container="hellotxt", blob="hello.txt")
+stream = blob_client.download_blob()
+welcomestring = stream.readall()
 
 
 @app.route('/')
 def index():
    print('Request for index page received')
-   return render_template('index.html')
+   return render_template('index.html', welcometxt = welcomestring)
 
 @app.route('/favicon.ico')
 def favicon():
@@ -26,4 +39,5 @@ def hello():
 
 
 if __name__ == '__main__':
+
    app.run()
