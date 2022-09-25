@@ -13,7 +13,7 @@ blob_service_client = BlobServiceClient(
     )
 blob_client = blob_service_client.get_blob_client(container="hellotxt", blob="hello.txt")
 stream = blob_client.download_blob()
-welcomestring = stream.readall()
+welcomestring = stream.readall().decode()
 
 
 @app.route('/')
